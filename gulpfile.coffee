@@ -61,7 +61,7 @@ clean = (cb) -> del 'build', cb
 gulp.task 'clean', clean
 gulp.task 'setWatch', -> global.isWatching = true
 gulp.task 'build', -> build()
-gulp.task 'watch', ['setWatch', 'build']
+gulp.task 'watch', gulp.series(['setWatch', 'build'])
 
 buildNode = (compileCoffee = true) ->
   logger.start()
@@ -83,6 +83,6 @@ gulp.task 'test-node-watch', ->
 
 gulp.task 'build-test-browserify', -> build(true)
 gulp.task 'run-phantomjs', -> gulp.src('test/testbed.html').pipe(mochaPhantomJS reporter: 'spec')
-gulp.task 'test-phantomjs', ['build-test-browserify', 'run-phantomjs']
+gulp.task 'test-phantomjs', gulp.series(['build-test-browserify', 'run-phantomjs'])
 
-gulp.task 'default', ['test-node', 'test-node-watch']
+gulp.task 'default', gulp.series(['test-node', 'test-node-watch'])
