@@ -22,32 +22,32 @@ describe 'Adding files', ->
     internal.renderDocumentFile.restore()
 
   it 'should add file for embedded content types', ->
-    expect(@data['[Content_Types].xml']).to.be.defined
+    expect(@data['[Content_Types].xml']).to.exist
     content = String(@data['[Content_Types].xml'])
     expect(content).to.match /PartName="\/word\/afchunk.mht"/
     expect(content).to.match /PartName="\/word\/document.xml"/
     expect(content).to.match /Extension="rels"/
 
   it 'should add manifest for Word document', ->
-    expect(@data._rels['.rels']).to.be.defined
+    expect(@data._rels['.rels']).to.exist
     content = String(@data._rels['.rels'])
     expect(content).to.match /Target="\/word\/document.xml"/
 
   it 'should add MHT file with given content', ->
-    expect(@data.word['afchunk.mht']).to.be.defined
+    expect(@data.word['afchunk.mht']).to.exist
     expect(String @data.word['afchunk.mht']).to.match /foobar/
 
   it 'should render the Word document and add its contents', ->
     expect(internal.renderDocumentFile).to.have.been.calledWith someOption: true
-    expect(@data.word['document.xml']).to.be.defined
+    expect(@data.word['document.xml']).to.exist
     expect(String @data.word['document.xml']).to.match /<document \/>/
 
   it 'should add relationship file to link between Word and HTML files', ->
-    expect(@data.word._rels['document.xml.rels']).to.be.defined
+    expect(@data.word._rels['document.xml.rels']).to.exist
     expect(String @data.word._rels['document.xml.rels']).to
       .match /Target="\/word\/afchunk.mht" Id="htmlChunk"/
 
-describe 'Coverting HTML to MHT', ->
+describe 'Converting HTML to MHT', ->
   it 'should convert HTML source to an MHT document', ->
     htmlSource = '<!DOCTYPE HTML><head></head><body></body>'
     expect(utils.getMHTdocument(htmlSource)).to.match
@@ -59,7 +59,7 @@ describe 'Coverting HTML to MHT', ->
 
   it 'should detect any embedded image and change its source to ContentPart name', ->
     htmlSource = '<p><img src="data:image/jpeg;base64,PHN2ZyB..."></p>'
-    expect(utils.getMHTdocument(htmlSource)).to.match /<img src=3D"file:\/\/fake\/image0.jpeg">/
+    expect(utils.getMHTdocument(htmlSource)).to.match /<img src=3D"file:\/\/\/C:\/fake\/image0.jpeg">/
 
   it 'should produce ContentPart for each embedded image', ->
     htmlSource = '<p><img src="data:image/jpeg;base64,PHN2ZyB...">
@@ -70,7 +70,7 @@ describe 'Coverting HTML to MHT', ->
     imageParts.forEach (image, index) ->
       expect(image).to.match /Content-Type: image\/(jpeg|png|gif)/
       expect(image).to.match /Content-Transfer-Encoding: base64/
-      expect(image).to.have.string "Content-Location: file://fake/image#{index}."
+      expect(image).to.have.string "Content-Location: file:///C:/fake/image#{index}."
 
   it 'should replace = signs to 3D=', ->
     htmlSource = '<body style="width: 100%">This = 0</body>'

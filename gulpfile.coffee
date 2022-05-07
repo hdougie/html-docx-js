@@ -76,7 +76,7 @@ buildNode = (compileCoffee = true) ->
 gulp.task 'build-node', buildNode
 gulp.task 'test-node', (growl = false) ->
   buildNode(false)
-  gulp.src(testsBundle, read: false).pipe mocha {reporter: 'spec', growl}
+  gulp.src(testsBundle, read: false).pipe mocha {require: 'coffee-script/register', reporter: 'spec', growl}
 gulp.task 'test-node-watch', ->
   sources = ['src/**', 'test/**']
   gulp.watch sources, ['test-node']
