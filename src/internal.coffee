@@ -5,15 +5,19 @@ _ = merge: require 'lodash.merge'
 
 module.exports =
   generateDocument: (zip) ->
-    buffer = zip.generate(type: 'arraybuffer')
-    if global.Blob
-      new Blob [buffer],
-        type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-    else if global.Buffer
-      new Buffer new Uint8Array(buffer)
-    else
-      throw new Error "Neither Blob nor Buffer are accessible in this environment. " +
-        "Consider adding Blob.js shim"
+    zip
+      .generateAsync(type: 'arraybuffer')
+      .then(
+        (buffer) ->
+          if global.Blob
+            new Blob [buffer],
+              type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+          else if global.Buffer
+            new Buffer new Uint8Array(buffer)
+          else
+            throw new Error "Neither Blob nor Buffer are accessible in this environment. " +
+              "Consider adding Blob.js shim"
+      )
 
   renderDocumentFile: (documentOptions = {}) ->
     templateData = _.merge margins:
