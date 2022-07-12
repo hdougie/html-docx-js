@@ -10,6 +10,7 @@ mochaPhantomJS = require 'gulp-mocha-phantomjs'
 template = require 'gulp-lodash-template'
 coffee = require 'gulp-coffee'
 del = require 'del'
+merge = require 'lodash.merge'
 
 startTime = null
 logger =
@@ -35,15 +36,13 @@ build = (test) ->
     ['html-docx.js', './src/api', standalone: 'html-docx']
 
   bundleMethod = if global.isWatching then watchify else browserify
-  bundler = bundleMethod
-    entries: [entry]
-    extensions: ['.coffee', '.tpl']
+  bundler = bundleMethod merge({ entries: [entry], extensions: ['.coffee', '.tpl'] }, options)
 
   bundle = ->
     logger.start()
     bundler
       .transform 'jstify', engine: 'lodash-micro', minifierOpts: false
-      .bundle options
+      .bundle()
       .on 'error', handleErrors
       .pipe vinyl(output)
       .pipe gulp.dest('./build')
